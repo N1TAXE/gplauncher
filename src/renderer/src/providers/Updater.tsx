@@ -41,16 +41,14 @@ const UpdateProvider = ({ children }: { children: React.ReactNode }): React.Reac
     const getInfo = (): {message: string} => {
         switch (status) {
             default:
-                return {message: 'Test'}
             case 'checkingForUpdate':
-                return {message: 'Проверка обновлений...test'}
+                return {message: 'Проверка обновлений...'}
             case 'updateAvailable':
-                return {message: 'Обновление доступно! Скачиваем...test'}
+                return {message: 'Обновление доступно! Скачиваем...'}
             case 'updateNotAvailable':
-                return {message: 'Установлена последняя версия приложения_test'}
+                return {message: 'Установлена последняя версия приложения'}
             case 'updateDownloaded':
-                return {message: 'Обновление скачано! Устанавливаем..._test'}
-
+                return {message: 'Обновление скачано! Устанавливаем...'}
         }
     }
 
