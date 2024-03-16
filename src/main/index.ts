@@ -30,7 +30,6 @@ function createMainWindow(): void {
             contextIsolation: true,
         }
     })
-    mainWindow.webContents.openDevTools();
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()

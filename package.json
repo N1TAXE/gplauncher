@@ -1,6 +1,6 @@
 {
     "name": "gplauncher",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "description": "Custom Minecraft Launcher",
     "main": "./out/main/index.js",
     "author": {
