@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TailSpin } from 'react-loader-spinner'
 const UpdateProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [status, setStatus] = useState('')
+    const [status, setStatus] = useState('checkingForUpdate')
 
     const ipcRenderer = window.electron.ipcRenderer;
 
