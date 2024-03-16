@@ -3,6 +3,10 @@ productName: GPLauncher
 directories:
     output: dist
     buildResources: build
+
+asar: true
+compression: 'maximum'
+
 files:
     - '**/*'
     - 'dist/**/*'
@@ -12,12 +16,14 @@ files:
     - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
     - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
     - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-    - '!resources/**/*.dylib'
-    - '!resources/**/*.plist'
 asarUnpack:
     - resources/**
 win:
+    icon: build/icon.ico
     executableName: GPLauncher
+    target:
+        -   target: 'nsis'
+            arch: 'x64'
 nsis:
     artifactName: ${name}-${version}-setup.${ext}
     shortcutName: ${productName}
@@ -38,6 +44,3 @@ linux:
 appImage:
     artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-    provider: github
-    token: ${{ secrets.GH_TOKEN }}

@@ -6,34 +6,10 @@ import * as path from "path";
 import { Client, Authenticator, ILauncherOptions, DistTypes } from 'gpl-core'
 import { store } from './store'
 import { autoUpdater } from 'electron-updater'
+import 'dotenv/config'
 
-autoUpdater.autoDownload = true
-autoUpdater.autoInstallOnAppQuit = true
-autoUpdater.autoRunAppAfterInstall = true
-
-autoUpdater.on('checking-for-update', () => {
-    mainWindow.webContents.send('launcher:checkingForUpdate')
-})
-autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('launcher:updateAvailable')
-})
-autoUpdater.on('update-not-available', () => {
-    mainWindow.webContents.send('launcher:updateNotAvailable')
-})
-autoUpdater.on('update-downloaded', () => {
-    mainWindow.webContents.send('launcher:updateDownloaded')
-    autoUpdater.quitAndInstall()
-})
-autoUpdater.on('update-cancelled', () => {
-    console.log('test')
-})
-autoUpdater.on('error', (error) => {
-    console.error('Ошибка обновления:', error.message)
-})
-
-autoUpdater.on('update-cancelled', () => {
-    mainWindow.webContents.send('launcher:updateCancelled')
-})
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 let mainWindow: BrowserWindow
 let launcher: Client
@@ -51,9 +27,10 @@ function createMainWindow(): void {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false,
             nodeIntegration: true,
-            contextIsolation: true
+            contextIsolation: true,
         }
     })
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()
@@ -108,22 +85,39 @@ if (!gotTheLock) {
         createMainWindow()
 
         app.on('activate', function () {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
             if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
         })
+
+        autoUpdater.checkForUpdates();
     })
 }
 
-function handleCommands(): void {
+autoUpdater.on('checking-for-update', () => {
+    mainWindow.webContents.send('launcher:checkingForUpdate')
+})
+autoUpdater.on('update-available', () => {
+    mainWindow.webContents.send('launcher:updateAvailable')
+    autoUpdater.downloadUpdate();
+})
+autoUpdater.on('update-not-available', () => {
+    mainWindow.webContents.send('launcher:updateNotAvailable')
+})
+autoUpdater.on('update-downloaded', () => {
+    mainWindow.webContents.send('launcher:updateDownloaded')
+    autoUpdater.quitAndInstall()
+})
+autoUpdater.on('update-cancelled', () => {
+    console.log('test')
+})
+autoUpdater.on('error', (error) => {
+    console.error('Ошибка обновления:', error.message)
+})
 
-    ipcMain.on('launcher:getUpdates', async () => {
-        if (is.dev) {
-            mainWindow.webContents.send('launcher:updateNotAvailable')
-        } else {
-            autoUpdater.checkForUpdates();
-        }
-    })
+autoUpdater.on('update-cancelled', () => {
+    mainWindow.webContents.send('launcher:updateCancelled')
+})
+
+function handleCommands(): void {
     ipcMain.on('launcher:setNickname', async (_e, data) => {
         store.set('username', data)
     })

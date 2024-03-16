@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TailSpin } from 'react-loader-spinner'
 const UpdateProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [status, setStatus] = useState('checkingForUpdate')
+    const [status, setStatus] = useState('')
 
     const ipcRenderer = window.electron.ipcRenderer;
 
@@ -41,14 +41,15 @@ const UpdateProvider = ({ children }: { children: React.ReactNode }): React.Reac
     const getInfo = (): {message: string} => {
         switch (status) {
             default:
+                return {message: 'Test'}
             case 'checkingForUpdate':
-                return {message: 'Проверка обновлений...'}
+                return {message: 'Проверка обновлений...test'}
             case 'updateAvailable':
-                return {message: 'Обновление доступно! Скачиваем...'}
+                return {message: 'Обновление доступно! Скачиваем...test'}
             case 'updateNotAvailable':
-                return {message: 'Установлена последняя версия приложения'}
+                return {message: 'Установлена последняя версия приложения_test'}
             case 'updateDownloaded':
-                return {message: 'Обновление скачано! Устанавливаем...'}
+                return {message: 'Обновление скачано! Устанавливаем..._test'}
 
         }
     }
