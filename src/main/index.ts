@@ -106,9 +106,6 @@ autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('launcher:updateDownloaded')
     autoUpdater.quitAndInstall()
 })
-autoUpdater.on('update-cancelled', () => {
-    console.log('test')
-})
 autoUpdater.on('error', (error) => {
     console.error('Ошибка обновления:', error.message)
 })
