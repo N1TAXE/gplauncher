@@ -1,0 +1,94 @@
+.input {
+    &Item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            color: #FFF;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 16px;
+            z-index: 1;
+        }
+    }
+    &Wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        button {
+            display: flex;
+            padding: 15px 16px;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            color: #FFF;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 16px;
+            outline: none;
+            border: none;
+            backdrop-filter: blur(8px);
+            transition: border ease .3s, background-color ease .3s;
+            cursor: pointer;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            &:hover {
+                background: rgba(255, 255, 255, 0.25);
+            }
+        }
+        input {
+            display: flex;
+            padding: 15px 16px;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 100%;
+            color: #FFF;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 16px;
+            outline: none;
+            border: none;
+            backdrop-filter: blur(8px);
+
+            transition: border ease .3s, background-color ease .3s;
+
+            -moz-appearance: textfield;
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            &:focus {
+                background: rgba(255, 255, 255, 0.25);
+            }
+        }
+
+        &Double {
+            border-radius: 8px;
+            overflow: hidden;
+            button, input {
+                border-radius: unset;
+            }
+        }
+
+        i, span {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+}
