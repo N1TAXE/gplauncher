@@ -87,11 +87,13 @@ if (!gotTheLock) {
             if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
         })
 
-        if (is.dev) {
-            mainWindow.webContents.send('launcher:updateNotAvailable')
-        } else {
-            autoUpdater.checkForUpdates();
-        }
+        ipcMain.on('launcher:getUpdates', async () => {
+            if (is.dev) {
+                mainWindow.webContents.send('launcher:updateNotAvailable')
+            } else {
+                await autoUpdater.checkForUpdates();
+            }
+        })
     })
 }
 

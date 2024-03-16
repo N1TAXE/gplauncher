@@ -9,23 +9,18 @@ const UpdateProvider = ({ children }: { children: React.ReactNode }): React.Reac
     useEffect(() => {
         ipcRenderer.send('launcher:getUpdates')
         ipcRenderer.on('launcher:checkingForUpdate', () => {
-            console.log('checkingForUpdate')
             setStatus('checkingForUpdate')
         })
         ipcRenderer.on('launcher:updateAvailable', () => {
-            console.log('updateAvailable')
             setStatus('updateAvailable')
         })
         ipcRenderer.on('launcher:updateNotAvailable', () => {
-            console.log('updateNotAvailable')
             setStatus('updateNotAvailable')
         })
         ipcRenderer.on('launcher:updateDownloaded', () => {
-            console.log('updateDownloaded')
             setStatus('updateDownloaded')
         })
         ipcRenderer.on('launcher:updateCancelled', () => {
-            console.log('updateCancelled')
             setStatus('updateNotAvailable')
         })
     }, [])
