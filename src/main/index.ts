@@ -87,7 +87,11 @@ if (!gotTheLock) {
             if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
         })
 
-        autoUpdater.checkForUpdates();
+        if (is.dev) {
+            mainWindow.webContents.send('launcher:updateNotAvailable')
+        } else {
+            autoUpdater.checkForUpdates();
+        }
     })
 }
 
