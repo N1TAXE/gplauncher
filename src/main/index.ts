@@ -24,8 +24,15 @@ autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('launcher:updateDownloaded')
     autoUpdater.quitAndInstall()
 })
+autoUpdater.on('update-cancelled', () => {
+    console.log('test')
+})
 autoUpdater.on('error', (error) => {
     console.error('Ошибка обновления:', error.message)
+})
+
+autoUpdater.on('update-cancelled', () => {
+    mainWindow.webContents.send('launcher:updateCancelled')
 })
 
 let mainWindow: BrowserWindow
@@ -89,7 +96,6 @@ if (!gotTheLock) {
         dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
     })
     app.whenReady().then(() => {
-        autoUpdater.checkForUpdates()
         electronApp.setAppUserModelId('com.electron')
         app.on('browser-window-created', (_, window) => {
             optimizer.watchWindowShortcuts(window)
@@ -110,6 +116,14 @@ if (!gotTheLock) {
 }
 
 function handleCommands(): void {
+
+    ipcMain.on('launcher:getUpdates', async () => {
+        if (is.dev) {
+            mainWindow.webContents.send('launcher:updateNotAvailable')
+        } else {
+            autoUpdater.checkForUpdates();
+        }
+    })
     ipcMain.on('launcher:setNickname', async (_e, data) => {
         store.set('username', data)
     })

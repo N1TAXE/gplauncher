@@ -3,8 +3,28 @@
     "version": "1.0.0",
     "description": "Custom Minecraft Launcher",
     "main": "./out/main/index.js",
-    "author": "N1TAXE",
-    "repository": "https://github.com/N1TAXE/gplauncher",
+    "build" : {
+        "appId": "com.gplauncher.autoupdater",
+        "productName": "GPLauncher",
+        "win": {
+            "publish": [
+                "github"
+            ],
+            "icon": "icon.png"
+        },
+        "directories": {
+            "output": "dist",
+            "buildResources": "build"
+        }
+    },
+    "author": {
+        "name": "N1TAXE",
+        "email": "n1t4x3@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/N1TAXE/gplauncher.git"
+    },
     "publish": {
         "provider": "github",
         "releaseType": "release"
@@ -24,7 +44,8 @@
         "build:unpack": "npm run build && electron-builder --dir",
         "build:win": "npm run build && electron-builder --win",
         "build:mac": "electron-vite build && electron-builder --mac",
-        "build:linux": "electron-vite build && electron-builder --linux"
+        "build:linux": "electron-vite build && electron-builder --linux",
+        "build:publish": "npm run build:win --publish"
     },
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.0",
