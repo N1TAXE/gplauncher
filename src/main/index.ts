@@ -5,6 +5,28 @@ import icon from '../../resources/icon.png?asset'
 import * as path from "path";
 import { Client, Authenticator, ILauncherOptions, DistTypes } from 'gpl-core'
 import { store } from './store'
+import { autoUpdater } from 'electron-updater'
+
+autoUpdater.autoDownload = true
+autoUpdater.autoInstallOnAppQuit = true
+autoUpdater.autoRunAppAfterInstall = true
+
+autoUpdater.on('checking-for-update', () => {
+    mainWindow.webContents.send('launcher:checkingForUpdate')
+})
+autoUpdater.on('update-available', () => {
+    mainWindow.webContents.send('launcher:updateAvailable')
+})
+autoUpdater.on('update-not-available', () => {
+    mainWindow.webContents.send('launcher:updateNotAvailable')
+})
+autoUpdater.on('update-downloaded', () => {
+    mainWindow.webContents.send('launcher:updateDownloaded')
+    autoUpdater.quitAndInstall()
+})
+autoUpdater.on('error', (error) => {
+    console.error('Ошибка обновления:', error.message)
+})
 
 let mainWindow: BrowserWindow
 let launcher: Client
@@ -67,6 +89,7 @@ if (!gotTheLock) {
         dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
     })
     app.whenReady().then(() => {
+        autoUpdater.checkForUpdates()
         electronApp.setAppUserModelId('com.electron')
         app.on('browser-window-created', (_, window) => {
             optimizer.watchWindowShortcuts(window)

@@ -4,6 +4,11 @@
     "description": "Custom Minecraft Launcher",
     "main": "./out/main/index.js",
     "author": "N1TAXE",
+    "repository": "https://github.com/N1TAXE/gplauncher",
+    "publish": {
+        "provider": "github",
+        "releaseType": "release"
+    },
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -28,6 +33,7 @@
         "electron-updater": "^6.1.7",
         "gpl-core": "git+https://github.com/N1TAXE/MLC-GPLauncher.git",
         "react-circular-progressbar": "^2.1.0",
+        "react-loader-spinner": "^6.1.6",
         "react-query": "^3.39.3"
     },
     "devDependencies": {
