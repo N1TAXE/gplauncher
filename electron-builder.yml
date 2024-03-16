@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: gpmc
+appId: com.gplauncher.app
+productName: GPLauncher
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: gpmc
+  executableName: GPLauncher
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
