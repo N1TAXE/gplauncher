@@ -1,10 +1,9 @@
 {
-    "name": "gpmc",
+    "name": "gplauncher",
     "version": "1.0.0",
-    "description": "An Electron application with React and TypeScript",
+    "description": "Custom Minecraft Launcher",
     "main": "./out/main/index.js",
-    "author": "example.com",
-    "homepage": "https://electron-vite.org",
+    "author": "N1TAXE",
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -27,8 +26,7 @@
         "electron-updater": "^6.1.7",
         "gpl-core": "git+https://github.com/N1TAXE/MLC-GPLauncher.git",
         "react-circular-progressbar": "^2.1.0",
-        "react-query": "^3.39.3",
-        "zustand": "^4.5.2"
+        "react-query": "^3.39.3"
     },
     "devDependencies": {
         "@electron-toolkit/eslint-config-prettier": "^2.0.0",
