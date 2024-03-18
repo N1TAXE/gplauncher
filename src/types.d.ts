@@ -71,9 +71,10 @@ interface StoreTypes {
     clientMods: string[];
     memoryMin: number;
     memoryMax: number;
-}
-interface ServerStoreTypes {
-    version: string;
+    quickPlay: object;
+    fullscreen: boolean;
+    windowW: number;
+    windowH: number;
 }
 interface DownloadDataTypes {
     name: string;

@@ -9,7 +9,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 }
 export const Input = ({children, label, name, ...rest} : InputProps): React.ReactElement => {
     return (
-        <div className="inputItem">
+        <div className={`inputItem ${rest.className}`}>
             {label && name && <label htmlFor={name}>{label}</label>}
             <div className={`inputWrapper ${children ? 'inputWrapperDouble' : null}`}>
                 <input

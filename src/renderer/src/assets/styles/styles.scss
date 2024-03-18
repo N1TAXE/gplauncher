@@ -131,6 +131,11 @@ body {
 }
 
 .server {
+    &Wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
     display: flex;
     align-items: center;
     justify-content: left;

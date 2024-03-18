@@ -3,11 +3,12 @@ import {join} from 'path'
 import {electronApp, optimizer, is} from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as path from "path";
-import { Client, Authenticator, ILauncherOptions, DistTypes } from 'gpl-core'
+import { Client } from 'gpl-core'
 import { store } from './store'
 import { autoUpdater } from 'electron-updater'
 import 'dotenv/config'
 import log from 'electron-log'
+import { getOpts } from './utils'
 
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
@@ -79,7 +80,9 @@ if (!gotTheLock) {
 
         launcher = new Client();
 
-        handleCommands()
+        ipcCommands()
+        launcherCommands()
+        debug()
 
         createMainWindow()
 
@@ -119,9 +122,9 @@ autoUpdater.on('update-cancelled', () => {
     mainWindow.webContents.send('launcher:updateCancelled')
 })
 
-function handleCommands(): void {
-    ipcMain.on('launcher:setNickname', async (_e, data) => {
-        store.set('username', data)
+function ipcCommands(): void {
+    ipcMain.on('launcher:updateConfig', async (_e, data) => {
+        store.set(data.item, data.value)
     })
     ipcMain.on('launcher:getStore', async () => {
         mainWindow.webContents.send('launcher:getStore', store.store)
@@ -141,26 +144,13 @@ function handleCommands(): void {
             launcher.downloadServer(...opts).then(() => mainWindow.webContents.send('launcher:closed')).catch((e) => log.error(e))
         })
     })
-    ipcMain.on('launcher:get', () => {
+    ipcMain.on('launcher:checkInstance', () => {
         getOpts().then((opts) => {
             if (!opts) return;
             launcher.checkIfVersionDownloaded(...opts).then((isDownloaded) => {
-                mainWindow.webContents.send('launcher:get', isDownloaded)
+                mainWindow.webContents.send('launcher:checkInstance', isDownloaded)
             })
         })
-    })
-    ipcMain.on('launcher:setGameRoot', (_e, data) => {
-        store.set('gameRoot', data)
-    })
-
-    launcher.on('debug', (info) => {
-        log.info(info)
-    })
-    launcher.on('download-status', (info) => {
-        mainWindow.webContents.send('launcher:download', info)
-    })
-    launcher.on('close', () => {
-        mainWindow.webContents.send('launcher:closed')
     })
 
     ipcMain.on('app:close', () => {
@@ -185,40 +175,23 @@ function handleCommands(): void {
     });
 }
 
+function launcherCommands():void {
+    launcher.on('download-status', (info) => {
+        mainWindow.webContents.send('launcher:download', info)
+    })
+    launcher.on('close', () => {
+        mainWindow.webContents.send('launcher:closed')
+    })
+}
+
+function debug(): void {
+    launcher.on('debug', (info) => {
+        log.info(info)
+    })
+}
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 })
-
-async function getOpts(): Promise<[ILauncherOptions, DistTypes] | undefined> {
-    const url = 'https://gist.githubusercontent.com/N1TAXE/6384e1f556e3f76241c0b5c02a1fd4cd/raw/manifest.json'
-    let dist: DistTypes | undefined
-    await fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            dist = data
-        });
-    if (!dist) return;
-    store.set('dist', dist)
-    return [{
-        authorization: Authenticator.getAuth(store.get('username')),
-        root: store.get('gameRoot') || `./minecraft`,
-        version: {
-            number: dist.version,
-            type: "release"
-        },
-        memory: {
-            max: `${store.get('memoryMax')}M` || '6000M',
-            min: `${store.get('memoryMin')}M` || '4000M'
-        },
-        forge: dist.forge,
-        overrides: {
-            gameDirectory: `${store.get('gameRoot')}/versions/${dist.name}` || `./minecraft/versions/${dist.name}`,
-            fw: {
-                version: '1.6.0'
-            },
-            detached: false
-        }
-    }, dist]
-}

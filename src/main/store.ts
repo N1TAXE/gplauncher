@@ -1,5 +1,5 @@
 import Store, {Schema} from "electron-store";
-import { ServerStoreTypes, StoreTypes } from '../types'
+import { StoreTypes } from '../types'
 import * as os from 'os'
 import * as path from 'path'
 
@@ -26,12 +26,22 @@ const schema: Schema<StoreTypes> = {
     memoryMax: {
         type: 'number',
         default: 6000
+    },
+    quickPlay: {
+        type: 'boolean',
+        default: false
+    },
+    fullscreen: {
+        type: 'boolean',
+        default: false
+    },
+    windowW: {
+        type: 'number',
+        default: 856
+    },
+    windowH: {
+        type: 'number',
+        default: 482
     }
 };
 export const store = new Store({schema: schema});
-const serverSchema: Schema<ServerStoreTypes> = {
-    version: {
-        type: 'string'
-    }
-};
-export const serverStore = new Store({schema: serverSchema});

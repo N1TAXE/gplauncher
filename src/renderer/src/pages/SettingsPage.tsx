@@ -3,22 +3,40 @@ import { NavLink } from 'react-router-dom'
 import { MAIN_ROUTE } from '../utils/consts'
 import { Input } from '../components/Input'
 import { StoreTypes } from '../../../types'
+import Checkbox from '../components/Checkbox'
 const SettingsPage = (): React.ReactElement => {
     const ipcRenderer = window.electron.ipcRenderer;
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedFolder, setSelectedFolder] = useState('');
     const [ram, setRam] = useState<number>(0);
-
+    const [gameWindow, setGameWindow] = useState<{fullscreen: boolean; windowW: number; windowH: number;}>({fullscreen: false, windowW: 856, windowH: 482});
     const handleFolderSelect = (): void => ipcRenderer.send('app:changeGameRoot');
     const handleRamChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setRam(Number(e.target.value))
-        ipcRenderer.send('app:changeRam', Number(e.target.value))
+        ipcRenderer.send('launcher:updateConfig', {item: 'memoryMax', value: Number(e.target.value)})
+    };
+
+    const handleFullScreenChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        setGameWindow(prevState => (prevState && {
+            fullscreen: e.target.checked,
+            windowW: prevState.windowW,
+            windowH: prevState.windowH
+        }));
+        ipcRenderer.send('launcher:updateConfig', {item: 'fullscreen', value: e.target.checked})
+    };
+    const handleWindowChange = (e: ChangeEvent<HTMLInputElement>, isWidth: boolean): void => {
+        setGameWindow(prevState => (prevState && {
+            fullscreen: prevState.fullscreen,
+            windowW: isWidth ? Number(e.target.value) : prevState.windowW,
+            windowH: !isWidth ? Number(e.target.value) : prevState.windowH,
+        }));
+        ipcRenderer.send('launcher:updateConfig', {item: isWidth ? 'windowW' : 'windowH', value: Number(e.target.value)})
     };
 
     const handleFolder = (data: string): void => {
         if (data) {
             setSelectedFolder(data)
-            ipcRenderer.send('launcher:setGameRoot', data);
+            ipcRenderer.send('launcher:updateConfig', {item: 'gameRoot', value: data})
         }
     };
     useEffect(() => {
@@ -27,6 +45,7 @@ const SettingsPage = (): React.ReactElement => {
             if (data) {
                 setSelectedFolder(data.gameRoot)
                 setRam(data.memoryMax)
+                setGameWindow({fullscreen: data.fullscreen, windowW: data.windowW, windowH: data.windowH})
                 setIsLoading(false)
             }
         };
@@ -51,6 +70,11 @@ const SettingsPage = (): React.ReactElement => {
                 <button onClick={handleFolderSelect}>Обзор</button>
             </Input>
             <Input onChange={handleRamChange} value={ram} label="Оперативная память" name="ram" type="number" placeholder="Введите значение"/>
+            <div className='inputGroup'>
+                <Input className={gameWindow.fullscreen ? "disabled" : undefined} disabled={gameWindow?.fullscreen} onChange={(e) => handleWindowChange(e, true)} value={gameWindow?.windowW} label="Ширина окна игры" name="windowW" type="number" placeholder="Введите значение"/>
+                <Input className={gameWindow.fullscreen ? "disabled" : undefined} disabled={gameWindow?.fullscreen} onChange={(e) => handleWindowChange(e, false)} value={gameWindow?.windowH} label="Высота окна игры" name="windowH" type="number" placeholder="Введите значение"/>
+            </div>
+            <Checkbox name="fullscreen" checked={gameWindow.fullscreen} onChange={handleFullScreenChange}>Полноэкранный режим</Checkbox>
         </div>
     )
 }
