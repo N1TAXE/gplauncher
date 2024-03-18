@@ -7,9 +7,12 @@ import { Client, Authenticator, ILauncherOptions, DistTypes } from 'gpl-core'
 import { store } from './store'
 import { autoUpdater } from 'electron-updater'
 import 'dotenv/config'
+import log from 'electron-log'
 
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
+
+log.initialize();
 
 let mainWindow: BrowserWindow
 let launcher: Client
@@ -62,14 +65,11 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
     app.quit()
 } else {
-    app.on('second-instance', (_event, commandLine) => {
-        // Someone tried to run a second instance, we should focus our window.
+    app.on('second-instance', () => {
         if (mainWindow) {
             if (mainWindow.isMinimized()) mainWindow.restore()
             mainWindow.focus()
         }
-        // the commandLine is array of strings in which last element is deep link url
-        dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
     })
     app.whenReady().then(() => {
         electronApp.setAppUserModelId('com.electron')
@@ -132,13 +132,13 @@ function handleCommands(): void {
             launcher.launch(...opts).then(() => {
                 mainWindow.webContents.send('launcher:started')
                 mainWindow.minimize()
-            }).catch((e) => console.log(e))
+            }).catch((e) => log.error(e))
         })
     })
     ipcMain.on('launcher:downloadServer', async () => {
         getOpts().then((opts) => {
             if (!opts) return;
-            launcher.downloadServer(...opts).then(() => mainWindow.webContents.send('launcher:closed')).catch((e) => console.log(e))
+            launcher.downloadServer(...opts).then(() => mainWindow.webContents.send('launcher:closed')).catch((e) => log.error(e))
         })
     })
     ipcMain.on('launcher:get', () => {
@@ -153,6 +153,9 @@ function handleCommands(): void {
         store.set('gameRoot', data)
     })
 
+    launcher.on('debug', (info) => {
+        log.info(info)
+    })
     launcher.on('download-status', (info) => {
         mainWindow.webContents.send('launcher:download', info)
     })
