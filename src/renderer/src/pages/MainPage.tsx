@@ -6,7 +6,10 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import { Input } from '../components/Input'
 import Checkbox from '@renderer/components/Checkbox';
 import Preloader from '../components/Preloader'
+import { useTranslation } from 'react-i18next'
 const MainPage = (): React.ReactElement => {
+    const {t} = useTranslation()
+
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [store, setStore] = useState<StoreTypes | null>(null);
     const [status, setStatus] = useState<string>('');
@@ -19,14 +22,12 @@ const MainPage = (): React.ReactElement => {
 
     const ipcRenderer = window.electron.ipcRenderer;
     const ipcHandle = (): void => {
-        setStatus('Подготовка...')
+        setStatus('gamePreparing')
         ipcRenderer.send('launcher:download')
     }
 
     const getServer = async (): Promise<void> => {
-        console.log('ping')
         if (!store) return;
-        console.log('ping2')
         axios.get('https://mcapi.us/server/status', {
             params: {
                 ip: store.dist.server.address,
@@ -54,20 +55,20 @@ const MainPage = (): React.ReactElement => {
         ipcRenderer.send('launcher:getStore')
         const handleCheckInstance = (_event, data): void => {
             if (data) {
-                setStatus('Играть');
+                setStatus('gamePlay');
             } else {
-                setStatus('Установить');
+                setStatus('gameInstall');
             }
         };
         const handleDownloadStatus = (_event, data): void => {
             setDownloadStatus(data);
-            setStatus('Обновление...');
+            setStatus('gameUpdating');
         };
         const handleLauncherStarted = (): void => {
-            setStatus('Игра запущена');
+            setStatus('gameStarted');
         };
         const handleLauncherClosed = (): void => {
-            setStatus('Играть');
+            setStatus('gamePlay');
         };
         const handleStore = (_e, data): void => {
             if (data) {
@@ -105,7 +106,7 @@ const MainPage = (): React.ReactElement => {
     }
 
     useEffect(() => {
-        if (store && status) {
+        if (store && status && isLoading) {
             setIsLoading(false)
         }
     }, [status, isLoading, store])
@@ -131,21 +132,21 @@ const MainPage = (): React.ReactElement => {
                         </svg>
                     </button>
                 </div>
-                <Checkbox name="quickPlay" checked={quickPlay} onChange={handleQuickPlay}>Автоподключение к серверу</Checkbox>
+                <Checkbox name="quickPlay" checked={quickPlay} onChange={handleQuickPlay}>{t("ln_gameQuickPlay")}</Checkbox>
             </div>
-            {(status === 'Обновление...' && downloadStatus) && (
+            {(status === t(`ln_gameAssets`) && downloadStatus) && (
                 <div className='downloader'>
                     <div className='downloaderInfo'>
-                        <span>{downloadStatus?.type === 'assets' ? 'Ассеты игры' : downloadStatus?.name}</span>
+                        <span>{downloadStatus?.type === 'assets' ? t(`ln_gameAssets`) : downloadStatus?.name}</span>
                         <h4>{formatBytes(downloadStatus.current)} / {formatBytes(downloadStatus.total)}</h4>
                     </div>
                     <CircularProgressbar value={percent} />
                 </div>
             )}
             <div className='main-buttons'>
-                <Input type='text' placeholder='Введите никнейм...' value={username} onChange={(e) => handleUsername(e)} />
-                <button disabled={status === 'Обновление...' || status === 'Игра запущена' || status === 'Подготовка...'} className="btn btn-md btn-success" onClick={ipcHandle}>
-                    {status}
+                <Input type='text' placeholder={t(`ln_ph_nickname`)} value={username} onChange={(e) => handleUsername(e)} />
+                <button disabled={status === 'gameUpdating' || status === 'gameStarted' || status === 'gamePreparing'} className="btn btn-md btn-success" onClick={ipcHandle}>
+                    {t(`ln_${status}`)}
                 </button>
             </div>
         </React.Fragment>

@@ -42,6 +42,9 @@ const schema: Schema<StoreTypes> = {
     windowH: {
         type: 'number',
         default: 482
+    },
+    lang: {
+        type: "string"
     }
 };
 export const store = new Store({schema: schema});

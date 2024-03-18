@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import Preloader from '../components/Preloader'
+import { StoreTypes } from '../../../types'
+import { useTranslation } from 'react-i18next'
 const UpdateProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
+    const {t, i18n} = useTranslation()
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [status, setStatus] = useState('checkingForUpdate')
+    const [store, setStore] = useState<StoreTypes | null>(null);
 
     const ipcRenderer = window.electron.ipcRenderer;
 
     useEffect(() => {
+        ipcRenderer.send("launcher:getStore");
         ipcRenderer.send('launcher:getUpdates')
+
+        ipcRenderer.on('launcher:getStore', (_e, data) => {
+            setStore(data)
+        })
         ipcRenderer.on('launcher:checkingForUpdate', () => {
             setStatus('checkingForUpdate')
         })
@@ -26,27 +35,34 @@ const UpdateProvider = ({ children }: { children: React.ReactNode }): React.Reac
     }, [])
 
     useEffect(() => {
-        if (status === 'updateNotAvailable') {
+        if (status === 'updateNotAvailable' && store) {
             setTimeout(() => {
                 setIsLoading(false)
             }, 2000)
         }
-    }, [status])
+    }, [status, store])
+
+    useEffect(() => {
+        if (store && store.lang) {
+            i18n.changeLanguage(store.lang).catch((e) => console.log(e))
+        }
+    }, [store])
 
     const getInfo = (): {message: string} => {
         switch (status) {
             default:
             case 'checkingForUpdate':
-                return {message: 'Проверка обновлений...'}
+                return {message: t("ln_checkingForUpdate")}
             case 'updateAvailable':
-                return {message: 'Обновление доступно! Скачиваем...'}
+                return {message: t("ln_updateAvailable")}
             case 'updateNotAvailable':
-                return {message: 'Установлена последняя версия приложения'}
+                return {message: t("ln_updateNotAvailable")}
             case 'updateDownloaded':
-                return {message: 'Обновление скачано! Устанавливаем...'}
+                return {message: t("ln_updateDownloaded")}
         }
     }
 
+    if (!store) return <Preloader/>
     if (isLoading) return <Preloader>{getInfo().message}</Preloader>
 
     return (

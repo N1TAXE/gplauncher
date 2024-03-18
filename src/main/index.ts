@@ -73,6 +73,10 @@ if (!gotTheLock) {
         }
     })
     app.whenReady().then(() => {
+        if (!store.get('lang')) {
+            store.set('lang', app.getLocale())
+        }
+
         electronApp.setAppUserModelId('com.electron')
         app.on('browser-window-created', (_, window) => {
             optimizer.watchWindowShortcuts(window)

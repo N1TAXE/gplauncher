@@ -45,7 +45,10 @@
         "electron-log": "^5.1.2",
         "electron-updater": "^6.1.7",
         "gpl-core": "git+https://github.com/N1TAXE/MLC-GPLauncher.git",
+        "i18next": "^23.10.1",
+        "os-locale": "^6.0.2",
         "react-circular-progressbar": "^2.1.0",
+        "react-i18next": "^14.1.0",
         "react-loader-spinner": "^6.1.6",
         "react-query": "^3.39.3"
     },

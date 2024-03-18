@@ -75,6 +75,7 @@ interface StoreTypes {
     fullscreen: boolean;
     windowW: number;
     windowH: number;
+    lang: string;
 }
 interface DownloadDataTypes {
     name: string;

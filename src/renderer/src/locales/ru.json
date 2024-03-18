@@ -1,0 +1,23 @@
+{
+    "ln_gamePlay": "Играть",
+    "ln_gameStarted": "Игра запущена",
+    "ln_gameUpdating": "Обновление...",
+    "ln_gamePreparing": "Подготовка...",
+    "ln_gameQuickPlay": "Автоподключение к серверу",
+    "ln_gameAssets": "Игровые ассеты",
+
+    "ln_checkingForUpdate": "Проверка обновлений...",
+    "ln_updateAvailable": "Обновление доступно! Скачиваем...",
+    "ln_updateNotAvailable": "Установлена последняя версия приложения",
+    "ln_updateDownloaded": "Обновление скачано! Устанавливаем...",
+
+    "ln_ph_nickname": "Введите никнейм...",
+    "ln_ph_value": "Введите значение...",
+
+    "ln_back": "Вернуться",
+    "ln_ram": "Оперативная память",
+    "ln_dir": "Директория",
+    "ln_fullscreen": "Полноэкранный режим",
+    "ln_screenWidth": "Ширина окна игры",
+    "ln_screenHeight": "Высота окна игры"
+}

@@ -1,0 +1,23 @@
+{
+    "ln_gamePlay": "Play",
+    "ln_gameStarted": "Game started",
+    "ln_gameUpdating": "Updating...",
+    "ln_gamePreparing": "Preparing...",
+    "ln_gameQuickPlay": "Autoconnect to server",
+    "ln_gameAssets": "Game Assets",
+
+    "ln_checkingForUpdate": "Checking for updates...",
+    "ln_updateAvailable": "Update available! Downloading...",
+    "ln_updateNotAvailable": "Installed last version",
+    "ln_updateDownloaded": "Update downloaded! Installing...",
+
+    "ln_ph_nickname": "Enter nickname...",
+    "ln_ph_value": "Enter value...",
+
+    "ln_back": "Back",
+    "ln_ram": "Ram",
+    "ln_dir": "Directory",
+    "ln_fullscreen": "Fullscreen",
+    "ln_screenWidth": "Game window width",
+    "ln_screenHeight": "Game window height"
+}
