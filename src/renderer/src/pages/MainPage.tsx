@@ -5,6 +5,7 @@ import { DownloadDataTypes, ServerTypes, StoreTypes } from '../../../types'
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { Input } from '../components/Input'
 import Checkbox from '@renderer/components/Checkbox';
+import Preloader from '../components/Preloader'
 const MainPage = (): React.ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [store, setStore] = useState<StoreTypes | null>(null);
@@ -73,7 +74,6 @@ const MainPage = (): React.ReactElement => {
                 setUsername(data.username)
                 setQuickPlay(data.quickPlay)
                 setStore(data)
-                setIsLoading(false)
             }
         };
 
@@ -104,7 +104,13 @@ const MainPage = (): React.ReactElement => {
         ipcRenderer.send('launcher:downloadServer')
     }
 
-    if (isLoading) return <div>Loading...</div>
+    useEffect(() => {
+        if (store && status) {
+            setIsLoading(false)
+        }
+    }, [status, isLoading, store])
+
+    if (isLoading) return <Preloader/>
 
     return (
         <React.Fragment>

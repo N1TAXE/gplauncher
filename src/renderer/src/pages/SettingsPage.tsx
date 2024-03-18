@@ -4,6 +4,7 @@ import { MAIN_ROUTE } from '../utils/consts'
 import { Input } from '../components/Input'
 import { StoreTypes } from '../../../types'
 import Checkbox from '../components/Checkbox'
+import Preloader from '../components/Preloader'
 const SettingsPage = (): React.ReactElement => {
     const ipcRenderer = window.electron.ipcRenderer;
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -46,7 +47,6 @@ const SettingsPage = (): React.ReactElement => {
                 setSelectedFolder(data.gameRoot)
                 setRam(data.memoryMax)
                 setGameWindow({fullscreen: data.fullscreen, windowW: data.windowW, windowH: data.windowH})
-                setIsLoading(false)
             }
         };
         const handleFolderSelected = (_e, data): void => {
@@ -57,7 +57,15 @@ const SettingsPage = (): React.ReactElement => {
         ipcRenderer.on('launcher:getStore', handleStore);
         ipcRenderer.on('app:gameRootChanged', handleFolderSelected);
     }, [])
-    if (isLoading) return <div>Loading...</div>
+
+    useEffect(() => {
+        if (selectedFolder && ram) {
+            setIsLoading(false)
+        }
+    }, [selectedFolder, isLoading, ram])
+
+    if (isLoading) return <Preloader/>
+
     return (
         <div className="settings">
             <NavLink className="btn-back" to={MAIN_ROUTE}>

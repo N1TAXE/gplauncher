@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TailSpin } from 'react-loader-spinner'
+import Preloader from '../components/Preloader'
 const UpdateProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [status, setStatus] = useState('checkingForUpdate')
@@ -47,32 +47,13 @@ const UpdateProvider = ({ children }: { children: React.ReactNode }): React.Reac
         }
     }
 
-    if (isLoading) {
-        return (
-            <div className="loader">
-                <div className='loaderWrapper'>
-                    <TailSpin
-                        visible={true}
-                        height="156"
-                        width="156"
-                        color="#74D372"
-                        ariaLabel="tail-spin-loading"
-                        radius="1"
-                        strokeWidth={3}
-                    />
-                    <span>
-                    {getInfo().message}
-                </span>
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <React.Fragment>
-                {children}
-            </React.Fragment>
-        )
-    }
+    if (isLoading) return <Preloader>{getInfo().message}</Preloader>
+
+    return (
+        <React.Fragment>
+            {children}
+        </React.Fragment>
+    )
 }
 
 export default UpdateProvider

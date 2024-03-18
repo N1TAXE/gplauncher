@@ -2,6 +2,7 @@ import React from 'react'
 import { useQuery } from 'react-query'
 import { fetchMods } from '../API'
 import { ModTypes } from '../../../types'
+import Preloader from '../components/Preloader'
 
 const ModsPage = () => {
     const { isLoading, error, data } = useQuery<ModTypes[], Error>(
@@ -12,7 +13,8 @@ const ModsPage = () => {
         }
     );
 
-    if (isLoading) return <p>Загрузка модов...</p>;
+    if (isLoading) return <Preloader/>
+
     if (error) return <p>Ошибка: {error.message}</p>;
     return (
         <React.Fragment>
