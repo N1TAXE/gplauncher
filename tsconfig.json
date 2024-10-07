@@ -2,7 +2,11 @@
     "compilerOptions": {
         "target": "ESNext",
         "types": ["vite/client"],
-        "jsx": "react"
+        "jsx": "react",
+      "lib": [
+        "esnext.full",
+        "webworker"
+      ]
     },
     "include": [
         "src/**/*.ts",

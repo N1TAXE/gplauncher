@@ -3,12 +3,12 @@ import {join} from 'path'
 import {electronApp, optimizer, is} from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as path from "path";
-import { Client } from 'gpl-core'
 import { store } from './store'
 import { autoUpdater } from 'electron-updater'
 import 'dotenv/config'
 import log from 'electron-log'
 import { getOpts } from './utils'
+import { Launcher } from './core/launcher'
 
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
@@ -16,7 +16,7 @@ autoUpdater.autoInstallOnAppQuit = true;
 log.initialize();
 
 let mainWindow: BrowserWindow
-let launcher: Client
+let launcher: Launcher
 function createMainWindow(): void {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -82,7 +82,7 @@ if (!gotTheLock) {
             optimizer.watchWindowShortcuts(window)
         })
 
-        launcher = new Client();
+        launcher = new Launcher();
 
         ipcCommands()
         launcherCommands()
@@ -136,7 +136,8 @@ function ipcCommands(): void {
     ipcMain.on('launcher:download', async () => {
         getOpts().then((opts) => {
             if (!opts) return;
-            launcher.launch(...opts).then(() => {
+            launcher.setOptions(opts);
+            launcher.launch().then(() => {
                 mainWindow.webContents.send('launcher:started')
                 mainWindow.minimize()
             }).catch((e) => log.error(e))

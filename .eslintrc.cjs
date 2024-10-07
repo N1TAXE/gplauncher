@@ -4,5 +4,8 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     '@electron-toolkit/eslint-config-ts/recommended'
-  ]
+  ],
+    rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+    },
 }
